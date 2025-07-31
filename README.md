@@ -4,7 +4,7 @@
 
 [![Go Version](https://img.shields.io/badge/Go-1.19+-00ADD8?style=flat&logo=go)](https://golang.org)
 [![Gin Framework](https://img.shields.io/badge/Gin-1.9+-00ADD8?style=flat&logo=go)](https://gin-gonic.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-85EA2D?style=flat&logo=swagger)](https://swagger.io/)
 
 ## Fitur Utama
@@ -34,7 +34,7 @@ Pastikan sistem Anda telah terinstall:
 - [Go 1.19+](https://golang.org/dl/)
 - [Git](https://git-scm.com/)
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Clone Repository
 ```bash
