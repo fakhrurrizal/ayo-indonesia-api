@@ -1,6 +1,6 @@
 # AYO Indonesia - Football Team Management API
 
-🏆 **Backend API untuk mengelola tim sepakbola, pemain, jadwal pertandingan, dan hasil pertandingan**
+ **Backend API untuk mengelola tim sepakbola, pemain, jadwal pertandingan, dan hasil pertandingan**
 
 [![Go Version](https://img.shields.io/badge/Go-1.19+-00ADD8?style=flat&logo=go)](https://golang.org)
 [![Gin Framework](https://img.shields.io/badge/Gin-1.9+-00ADD8?style=flat&logo=go)](https://gin-gonic.com/)
