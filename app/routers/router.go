@@ -36,7 +36,7 @@ func Init() *gin.Engine {
 	router.Use(gin.Logger())
 
 	router.Use(static.Serve("/assets", static.LocalFile("assets", true)))
-
+	router.GET("/", controllers.Index)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/docs", func(c *gin.Context) {
@@ -50,7 +50,6 @@ func Init() *gin.Engine {
 			return
 		}
 	})
-
 
 	v1 := router.Group("/v1", middlewares.StripHTMLMiddleware())
 	{
