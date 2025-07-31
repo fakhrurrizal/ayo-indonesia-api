@@ -11,18 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/guregu/null"
 	"github.com/lib/pq"
 )
 
-func CreateUser( data *reqres.GlobalUserRequest, userID int) (response models.GlobalUser, err error) {
-	if userID == 0 {
-		var location *time.Location
-		location, err = time.LoadLocation("Asia/Jakarta")
-		if err != nil {
-			location = time.Local
-			err = nil
-		}
+func CreateUser(data *reqres.GlobalUserRequest) (response models.GlobalUser, err error) {
+		
 		_, errUser := GetUserByEmail(strings.ToLower(data.Email))
 		if errUser == nil {
 			err = errors.New("email has been registered")
@@ -34,8 +27,6 @@ func CreateUser( data *reqres.GlobalUserRequest, userID int) (response models.Gl
 			Email:    strings.ToLower(data.Email),
 			Password: middlewares.BcryptPassword(data.Password),
 		}
-
-		response.EmailVerifiedAt = null.TimeFrom(time.Now().In(location))
 
 		var created bool
 		for !created {
@@ -56,7 +47,6 @@ func CreateUser( data *reqres.GlobalUserRequest, userID int) (response models.Gl
 				created = true
 			}
 		}
-	}
 
 	return
 }
@@ -70,7 +60,7 @@ func BuildUserResponse(data models.GlobalUser) (response reqres.GlobalUserRespon
 	return response
 }
 
-func GetUsers( param reqres.ReqPaging, withTotalSale, withTotalPurchase bool) (data reqres.ResPaging) {
+func GetUsers(param reqres.ReqPaging, withTotalSale, withTotalPurchase bool) (data reqres.ResPaging) {
 	var responses []models.GlobalUser
 	where := "deleted_at IS NULL"
 
@@ -83,7 +73,6 @@ func GetUsers( param reqres.ReqPaging, withTotalSale, withTotalPurchase bool) (d
 	var totalResult TotalResult
 	config.DB.Model(&modelTotal).Select("COUNT(*) AS total, MAX(updated_at) AS last_updated").Scan(&totalResult)
 
-	
 	if param.Search != "" {
 		where += " AND (fullname ILIKE '%" + param.Search + "%' OR email ILIKE '%" + param.Search + "%')"
 	}
@@ -100,7 +89,7 @@ func GetUsers( param reqres.ReqPaging, withTotalSale, withTotalPurchase bool) (d
 		responsesRefined = append(responsesRefined, responseRefined)
 	}
 
-	data = utils.PopulateResPaging(&param, responsesRefined, totalResult.Total, totalFiltered, null.TimeFrom(totalResult.LastUpdated))
+	data = utils.PopulateResPaging(&param, responsesRefined, totalResult.Total, totalFiltered)
 
 	return
 }

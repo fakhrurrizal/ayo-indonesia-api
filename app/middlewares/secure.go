@@ -48,7 +48,6 @@ func StripHTMLMiddleware() gin.HandlerFunc {
 			}
 		}
 
-		// Overwrite the request raw query
 		c.Request.URL.RawQuery = sanitized.Encode()
 		c.Next()
 	}

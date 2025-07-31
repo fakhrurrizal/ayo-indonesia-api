@@ -18,26 +18,30 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authorizationHeader := c.GetHeader("Authorization")
-		bearerToken := strings.Split(authorizationHeader, " ")
-
-		if len(bearerToken) != 2 {
-			c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError("Incorrect Authorization Token"))
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError("Authorization header is missing"))
 			c.Abort()
 			return
 		}
 
-		tokenStr := bearerToken[1]
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+			c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError("Invalid Authorization format. Expected 'Bearer <token>'"))
+			c.Abort()
+			return
+		}
 
-		UserID, err := ValidateToken(tokenStr)
+		tokenStr := parts[1]
+		userID, err := ValidateToken(tokenStr)
 		if err != nil {
-			fmt.Println("Token Validation Error:", err)
-			c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError(err.Error()))
+			fmt.Println("Token validation error:", err)
+			c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError("Invalid or expired token"))
 			c.Abort()
 			return
 		}
 
-		c.Set("user_id", UserID)
+		c.Set("user_id", userID)
 		c.Next()
 	}
 }

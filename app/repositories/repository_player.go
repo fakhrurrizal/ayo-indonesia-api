@@ -5,137 +5,105 @@ import (
 	"ayo-indonesia-api/app/reqres"
 	"ayo-indonesia-api/app/utils"
 	"ayo-indonesia-api/config"
-	"strconv"
-	"time"
-
-	"github.com/guregu/null"
-	"github.com/lib/pq"
+	"errors"
 )
 
-func GetPlayers(teamID int, param reqres.ReqPaging) (data reqres.ResPaging) {
-	var responses []models.Player
-	where := "deleted_at IS NULL"
-
-	var modelTotal []models.Player
-
-	type TotalResult struct {
-		Total       int64
-		LastUpdated time.Time
-	}
-	var totalResult TotalResult
-	config.DB.Model(&modelTotal).Select("COUNT(*) AS total, MAX(updated_at) AS last_updated").Scan(&totalResult)
-
-	if param.Custom != "" {
-		where += " AND status = " + param.Custom.(string)
-	}
-	if param.Search != "" {
-		where += " AND (name ILIKE '%" + param.Search + "%' OR position ILIKE '%" + param.Search + "%')"
-	}
-
-	if teamID > 0 {
-		where += " AND team_id = " + strconv.Itoa(teamID)
-	}
-
+func GetPlayers(teamID uint, param reqres.ReqPaging) reqres.ResPaging {
+	var players []models.Player
+	var total int64
 	var totalFiltered int64
-	config.DB.Model(&modelTotal).Where(where).Count(&totalFiltered)
 
-	config.DB.Limit(param.Limit).Offset(param.Offset).Order(param.Sort + " " + param.Order).Where(where).Find(&responses)
-
-	var responsesRefined []reqres.PlayerResponse
-	for _, item := range responses {
-		responseRefined := BuildPlayerResponse(item)
-
-		responsesRefined = append(responsesRefined, responseRefined)
-	}
-
-	data = utils.PopulateResPaging(&param, responsesRefined, totalResult.Total, totalFiltered, null.TimeFrom(totalResult.LastUpdated))
-
-	return
-}
-
-func GetPlayerByID(id uint) (responseRefined reqres.PlayerResponse, err error) {
-	var response models.Player
-	err = config.DB.First(&response, id).Error
-
-	responseRefined = BuildPlayerResponse(response)
-
-	return
-}
-
-func CreatePlayer(data *reqres.PlayerRequest) (response models.Player, err error) {
-
-	response = models.Player{
-		Name:         data.Name,
-		Height:       data.Height,
-		Position:     data.Position,
-		Weight:       data.Weight,
-		JerseyNumber: data.JerseyNumber,
-		TeamID:       data.TeamID,
-	}
-
-	var created bool
-	for !created {
-		err = config.DB.Create(&response).Error
-		if err != nil {
-			if !config.LoadConfig().EnableIDDuplicationHandling {
-				return
-			}
-			if pqErr, ok := err.(*pq.Error); ok {
-				if pqErr.Code != "23505" {
-					return
-				}
-			}
-		} else {
-			created = true
-		}
-	}
-
-	return
-}
-
-func UpdatePlayer(request models.Player) (response models.Player, err error) {
-	err = config.DB.Save(&request).Scan(&response).Error
-
-	return
-}
-
-func DeletePlayer(request models.Player) (models.Player, error) {
-	err := config.DB.Delete(&request).Error
-	return request, err
-}
-
-func CountPlayer(teamID uint) (total int64) {
-	where := "deleted_at IS NULL"
+	query := config.DB.Model(&models.Player{})
 
 	if teamID > 0 {
-		where += " AND team_id = " + strconv.Itoa(int(teamID))
+		query = query.Where("team_id = ?", teamID)
 	}
 
-	var modelTotal []models.GlobalUser
+	if param.Search != "" {
+		query = query.Where("name ILIKE ? OR position ILIKE ?", "%"+param.Search+"%", "%"+param.Search+"%")
+	}
 
-	config.DB.Model(&modelTotal).Where(where).Count(&total)
+	query.Count(&totalFiltered)
+	config.DB.Model(&models.Player{}).Count(&total)
 
-	return total
+	query.Limit(param.Limit).Offset(param.Offset).Order(param.Sort + " " + param.Order).
+		Preload("Team").Find(&players)
+
+	var responses []reqres.PlayerResponse
+	for _, player := range players {
+		responses = append(responses, BuildPlayerResponse(player))
+	}
+
+	return utils.PopulateResPaging(&param, responses, total, totalFiltered)
 }
 
-func BuildPlayerResponse(data models.Player) (response reqres.PlayerResponse) {
+func GetPlayerByID(id uint) (models.Player, error) {
+	var player models.Player
+	err := config.DB.Preload("Team").First(&player, id).Error
+	return player, err
+}
 
-	var team models.Team
+func CreatePlayer(req reqres.PlayerRequest) (models.Player, error) {
+	var existingPlayer models.Player
+	if err := config.DB.Where("team_id = ? AND jersey_number = ?", req.TeamID, req.JerseyNumber).First(&existingPlayer).Error; err == nil {
+		return models.Player{}, errors.New("jersey number already exists in this team")
+	}
 
-	response.CustomGormModel = data.CustomGormModel
-	response.Name = data.Name
-	response.Height = data.Height
-	response.Position = data.Position
-	response.Weight = data.Weight
-	response.JerseyNumber = data.JerseyNumber
+	player := models.Player{
+		Name:         req.Name,
+		Height:       req.Height,
+		Weight:       req.Weight,
+		Position:     req.Position,
+		JerseyNumber: req.JerseyNumber,
+		TeamID:       req.TeamID,
+	}
+	err := config.DB.Create(&player).Error
+	if err == nil {
+		config.DB.Preload("Team").First(&player, player.ID)
+	}
+	return player, err
+}
 
-	if data.TeamID > 0 {
-		team, _ = GetTeamByIDPlain(data.TeamID)
-		response.Team = reqres.GlobalIDNameResponse{
-			ID:   int(team.ID),
-			Name: team.Name,
+func UpdatePlayer(id uint, req reqres.PlayerRequest) (models.Player, error) {
+	var player models.Player
+	if err := config.DB.First(&player, id).Error; err != nil {
+		return player, err
+	}
+
+	// Check jersey number uniqueness if changed
+	if player.JerseyNumber != req.JerseyNumber || player.TeamID != req.TeamID {
+		var existingPlayer models.Player
+		if err := config.DB.Where("team_id = ? AND jersey_number = ? AND id != ?", req.TeamID, req.JerseyNumber, id).First(&existingPlayer).Error; err == nil {
+			return models.Player{}, errors.New("jersey number already exists in this team")
 		}
 	}
 
-	return response
+	player.Name = req.Name
+	player.Height = req.Height
+	player.Weight = req.Weight
+	player.Position = req.Position
+	player.JerseyNumber = req.JerseyNumber
+	player.TeamID = req.TeamID
+
+	err := config.DB.Save(&player).Error
+	if err == nil {
+		config.DB.Preload("Team").First(&player, player.ID)
+	}
+	return player, err
+}
+
+func DeletePlayer(id uint) error {
+	return config.DB.Delete(&models.Player{}, id).Error
+}
+
+func BuildPlayerResponse(player models.Player) reqres.PlayerResponse {
+	return reqres.PlayerResponse{
+		ID:           player.ID,
+		Name:         player.Name,
+		Height:       player.Height,
+		Weight:       player.Weight,
+		Position:     player.Position,
+		JerseyNumber: player.JerseyNumber,
+		Team:         BuildTeamResponse(player.Team),
+	}
 }

@@ -2,88 +2,53 @@ package utils
 
 import (
 	"ayo-indonesia-api/app/reqres"
+	"math"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/guregu/null"
 )
 
-func PopulatePaging(c *gin.Context, custom string) (param reqres.ReqPaging) {
+func PopulatePaging(c *gin.Context, custom string) reqres.ReqPaging {
 	customval := c.Query(custom)
-	limit, _ := strconv.Atoi(c.Query("limit"))
-	if limit == 0 {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	sort := c.DefaultQuery("sort", "id")
+	order := c.DefaultQuery("order", "desc")
+	search := c.Query("search")
+
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 100 {
 		limit = 10
 	}
-	offset, _ := strconv.Atoi(c.Query("offset"))
-	page, _ := strconv.Atoi(c.Query("page"))
-	if page == 0 && offset == 0 {
-		page = 1
-		offset = 0
-	}
-	if page >= 1 && offset == 0 {
-		offset = (page - 1) * limit
-	}
-	draw, _ := strconv.Atoi(c.Query("draw"))
-	if draw == 0 {
-		draw = 1
-	}
-	order := c.Query("sort")
-	if strings.ToLower(order) == "asc" {
-		order = "ASC"
-	} else {
-		order = "DESC"
-	}
-	sort := c.Query("order")
-	if sort == "" {
-		sort = "created_at " + order
-	} else {
-		sort = sort + " " + order + ", created_at " + order
+	if order != "asc" && order != "desc" {
+		order = "desc"
 	}
 
-	param = reqres.ReqPaging{
-		Search: c.Query("search"),
-		Limit:  limit,
-		Offset: offset,
-		Sort:   sort,
-		Custom: customval,
+	offset := (page - 1) * limit
+
+	return reqres.ReqPaging{
 		Page:   page,
+		Limit:  limit,
+		Sort:   sort,
+		Order:  order,
+		Search: search,
+		Offset: offset,
+		Custom: customval,
 	}
-	return
 }
 
-func PopulateResPaging(param *reqres.ReqPaging, data interface{}, totalResult int64, totalFiltered int64, lastUpdated null.Time) (output reqres.ResPaging) {
-	totalPages := int(totalFiltered) / param.Limit
-	if int(totalFiltered)%param.Limit > 0 {
-		totalPages++
-	}
+func PopulateResPaging(param *reqres.ReqPaging, data interface{}, total int64, totalFiltered int64) reqres.ResPaging {
+	totalPages := int(math.Ceil(float64(totalFiltered) / float64(param.Limit)))
 
-	currentPage := param.Offset/param.Limit + 1
-	next := false
-	back := false
-	if currentPage < totalPages {
-		next = true
+	return reqres.ResPaging{
+		Status:        200,
+		Data:          data,
+		TotalData:     total,
+		TotalFiltered: totalFiltered,
+		Page:          param.Page,
+		Limit:         param.Limit,
+		TotalPages:    totalPages,
 	}
-	if currentPage <= totalPages && currentPage > 1 {
-		back = true
-	}
-
-	output = reqres.ResPaging{
-		Status:          200,
-		Draw:            1,
-		Data:            data,
-		Search:          param.Search,
-		Order:           param.Order,
-		Limit:           param.Limit,
-		Offset:          param.Offset,
-		Sort:            param.Sort,
-		Next:            next,
-		Back:            back,
-		TotalData:       int(totalResult),
-		RecordsFiltered: int(totalFiltered),
-		CurrentPage:     currentPage,
-		TotalPage:       totalPages,
-		LastUpdated:     lastUpdated,
-	}
-	return
 }

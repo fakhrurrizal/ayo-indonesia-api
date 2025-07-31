@@ -1,177 +1,130 @@
 definitions:
-  reqres.BookingAdditionalServiceRequest:
+  reqres.GoalRequest:
     properties:
-      booking_id:
+      minute:
         type: integer
-      price:
+      player_id:
+        type: integer
+    type: object
+  reqres.GoalResponse:
+    properties:
+      id:
+        type: integer
+      minute:
+        type: integer
+      player:
+        $ref: '#/definitions/reqres.PlayerResponse'
+    type: object
+  reqres.MatchReportResponse:
+    properties:
+      away_team_total_wins:
+        type: integer
+      home_team_total_wins:
+        type: integer
+      match:
+        $ref: '#/definitions/reqres.MatchResponse'
+      match_result:
+        type: string
+      top_scorer:
+        $ref: '#/definitions/reqres.PlayerResponse'
+    type: object
+  reqres.MatchRequest:
+    properties:
+      away_team_id:
+        type: integer
+      date:
+        type: string
+      home_team_id:
+        type: integer
+      time:
+        type: string
+    type: object
+  reqres.MatchResponse:
+    properties:
+      away_score:
+        type: integer
+      away_team:
+        $ref: '#/definitions/reqres.TeamResponse'
+      date:
+        type: string
+      goals:
+        items:
+          $ref: '#/definitions/reqres.GoalResponse'
+        type: array
+      home_score:
+        type: integer
+      home_team:
+        $ref: '#/definitions/reqres.TeamResponse'
+      id:
+        type: integer
+      status:
+        type: string
+      time:
+        type: string
+    type: object
+  reqres.MatchResultRequest:
+    properties:
+      away_score:
+        type: integer
+      goals:
+        items:
+          $ref: '#/definitions/reqres.GoalRequest'
+        type: array
+      home_score:
+        type: integer
+    type: object
+  reqres.PlayerRequest:
+    properties:
+      height:
         type: number
-      quantity:
+      jersey_number:
         type: integer
-      service_id:
-        type: integer
-    type: object
-  reqres.CategoryRequest:
-    properties:
-      app_id:
-        type: integer
-      description:
-        type: string
       name:
         type: string
-      status:
-        type: boolean
-    type: object
-  reqres.DestinationRequest:
-    properties:
-      description:
+      position:
         type: string
-      destination_type_id:
+      team_id:
         type: integer
-      latitude:
+      weight:
         type: number
-      location:
-        type: string
-      longitude:
+    type: object
+  reqres.PlayerResponse:
+    properties:
+      height:
         type: number
-      name:
-        type: string
-      status:
-        type: boolean
-    type: object
-  reqres.DestinationTypeRequest:
-    properties:
-      app_id:
+      id:
         type: integer
-      description:
-        type: string
+      jersey_number:
+        type: integer
       name:
         type: string
-      status:
-        type: boolean
-    type: object
-  reqres.EmailRequest:
-    properties:
-      email:
+      position:
         type: string
-    required:
-    - email
-    type: object
-  reqres.GlobalRegisterGeoTaggingRequest:
-    properties:
-      ip_address:
-        type: string
-      latitude:
+      team:
+        $ref: '#/definitions/reqres.TeamResponse'
+      weight:
         type: number
-      longitude:
-        type: number
-      user_id:
+    type: object
+  reqres.ResPaging:
+    properties:
+      data: {}
+      limit:
         type: integer
-    type: object
-  reqres.GlobalRoleRequest:
-    properties:
-      app_id:
-        description: Permission  []PermissionForRoleRequest `json:"permission"`
-        type: integer
-      description:
-        type: string
-      flag:
-        type: string
-      name:
-        type: string
-      status:
-        type: integer
-    type: object
-  reqres.GlobalRoleUpdateRequest:
-    properties:
-      description:
-        type: string
-      name:
-        type: string
-      status:
-        type: integer
-    required:
-    - name
-    type: object
-  reqres.GlobalUserUpdateRequest:
-    properties:
-      address:
-        type: string
-      avatar:
-        type: string
-      city:
-        type: string
-      country:
-        type: string
-      district:
-        type: string
-      fullname:
-        type: string
-      gender:
-        type: string
-      password:
-        type: string
-      phone:
-        type: string
-      province:
-        type: string
-      village:
-        type: string
-      zip_code:
-        type: string
-    type: object
-  reqres.GuideRequest:
-    properties:
-      bio:
-        type: string
-      is_available:
-        type: boolean
-      name:
-        type: string
-      phone:
-        type: string
-      specialization:
-        type: string
-    type: object
-  reqres.ResetPasswordRequest:
-    properties:
-      new_password:
-        type: string
-      token:
-        type: string
-    required:
-    - new_password
-    - token
-    type: object
-  reqres.ServiceCategoryRequest:
-    properties:
-      app_id:
-        type: integer
-      description:
-        type: string
-      name:
-        type: string
-      status:
-        type: integer
-    type: object
-  reqres.ServiceRequest:
-    properties:
-      description:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-      service_category_id:
+      page:
         type: integer
       status:
-        type: boolean
+        type: integer
+      total_data:
+        type: integer
+      total_filtered:
+        type: integer
+      total_pages:
+        type: integer
     type: object
   reqres.SignInRequest:
     properties:
       email:
         type: string
-      geo_tagging:
-        $ref: '#/definitions/reqres.GlobalRegisterGeoTaggingRequest'
       password:
         type: string
     required:
@@ -180,358 +133,58 @@ definitions:
     type: object
   reqres.SignUpRequest:
     properties:
-      address:
-        type: string
-      avatar:
-        type: string
-      city:
-        type: string
-      country:
-        type: string
-      district:
-        type: string
       email:
         type: string
       fullname:
         type: string
-      gender:
-        type: string
       password:
-        type: string
-      phone:
-        type: string
-      province:
-        type: string
-      role_id:
-        type: integer
-      village:
-        type: string
-      zip_code:
         type: string
     required:
     - email
     - fullname
     - password
     type: object
-  reqres.TokenRequest:
-    properties:
-      token:
-        type: string
-    required:
-    - token
-    type: object
-  reqres.TransportationClassRequest:
-    properties:
-      code:
-        type: string
-      description:
-        type: string
-      name:
-        type: string
-      transportation_type_id:
-        type: integer
-    type: object
-  reqres.TransportationCompanyRequest:
-    properties:
-      code:
-        type: string
-      description:
-        type: string
-      logo:
-        type: string
-      name:
-        type: string
-      transportation_type_id:
-        type: integer
-    type: object
-  reqres.TransportationRouteRequest:
-    properties:
-      arrival_terminal_id:
-        type: integer
-      departure_terminal_id:
-        type: integer
-      distance_km:
-        type: number
-      estimated_duration:
-        type: number
-      name:
-        type: string
-      transportation_company_id:
-        type: integer
-      transportation_type_id:
-        type: integer
-    type: object
-  reqres.TransportationScheduleRequest:
-    properties:
-      arrival_at:
-        type: string
-      base_price:
-        type: number
-      departure_at:
-        type: string
-      image:
-        type: string
-      total_seat:
-        type: integer
-      transportation_class_id:
-        type: integer
-      transportation_route_id:
-        type: integer
-      valid_from:
-        type: string
-      valid_until:
-        type: string
-      vehicle_name:
-        type: string
-    type: object
-  reqres.TransportationTerminalRequest:
+  reqres.TeamRequest:
     properties:
       address:
         type: string
       city:
         type: string
-      code:
-        type: string
-      description:
-        type: string
-      name:
-        type: string
-      province:
-        type: string
-      transportation_type_id:
+      founded_year:
         type: integer
-    type: object
-  reqres.TransportationTypeRequest:
-    properties:
-      code:
-        type: string
-      description:
-        type: string
-      icon:
+      logo:
         type: string
       name:
         type: string
-      status:
-        type: boolean
     type: object
-  reqres.TripBookingRequest:
+  reqres.TeamResponse:
     properties:
-      booking_date:
+      address:
         type: string
-      notes:
+      city:
         type: string
-      number_of_people:
+      founded_year:
         type: integer
-      status:
+      id:
         type: integer
-      total_price:
-        type: number
-      trip_id:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  reqres.TripDestinationRequest:
-    properties:
-      destination_id:
-        type: integer
-      trip_id:
-        type: integer
-      visit_order:
-        type: integer
-    type: object
-  reqres.TripGuideRequest:
-    properties:
-      guide_id:
-        type: integer
-      trip_schedule_id:
-        type: integer
-    type: object
-  reqres.TripInclusionRequest:
-    properties:
-      description:
+      logo:
         type: string
       name:
         type: string
-      status:
-        type: boolean
-      trip_id:
-        type: integer
-    type: object
-  reqres.TripRequest:
-    properties:
-      app_id:
-        type: integer
-      base_price:
-        type: number
-      description:
-        type: string
-      destination_type_id:
-        type: integer
-      image:
-        items:
-          type: string
-        type: array
-      is_active:
-        type: boolean
-      latitude:
-        type: number
-      location:
-        type: string
-      longitude:
-        type: number
-      name:
-        type: string
-      status:
-        type: boolean
-      trip_category_id:
-        type: integer
-    required:
-    - image
-    type: object
-  reqres.TripScheduleRequest:
-    properties:
-      available_seat:
-        type: integer
-      departure_at:
-        type: string
-      duration_days:
-        type: integer
-      status:
-        type: boolean
-      trip_id:
+      players_count:
         type: integer
     type: object
 info:
   contact: {}
-  description: API documentation by Kang Fakhrur
-  title: Tripfy API
-  version: V1.2412.081710
+  description: API documentation by Muhammad Fakhrur Rizal
+  title: Ayo Indonesia API
 paths:
-  /v1/auth/check-email:
-    post:
-      consumes:
-      - application/json
-      description: ResendEmail user
-      parameters:
-      - description: valid email
-        in: body
-        name: Update
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.EmailRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: ResendEmail User
-      tags:
-      - Auth
-  /v1/auth/email-verification:
-    post:
-      consumes:
-      - application/json
-      description: Email Verification for User
-      parameters:
-      - description: fill with valid token
-        in: body
-        name: Update
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TokenRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Email Verification for User
-      tags:
-      - Auth
-  /v1/auth/forgot-password:
-    post:
-      consumes:
-      - application/json
-      description: Send Token Reset Password
-      parameters:
-      - description: csrf token
-        in: header
-        name: x-csrf-token
-        type: string
-      - description: Send token to email for reset password
-        in: body
-        name: signup
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.EmailRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Send Token Reset Password
-      tags:
-      - Auth
-  /v1/auth/resend-email-verification:
-    post:
-      consumes:
-      - application/json
-      description: ResendEmail user
-      parameters:
-      - description: valid email
-        in: body
-        name: Update
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.EmailRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: ResendEmail User
-      tags:
-      - Auth
-  /v1/auth/reset-password:
-    post:
-      consumes:
-      - application/json
-      description: Reset User Password
-      parameters:
-      - description: body to update password
-        in: body
-        name: Update
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.ResetPasswordRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Reset User Password
-      tags:
-      - Auth
   /v1/auth/signin:
     post:
       consumes:
       - application/json
       description: SignIn
       parameters:
-      - description: csrf token
-        in: header
-        name: x-csrf-token
-        type: string
       - description: SignIn user
         in: body
         name: signin
@@ -565,6 +218,11 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
       summary: SignUp
       tags:
       - Auth
@@ -576,583 +234,15 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties: true
+            type: object
       security:
       - ApiKeyAuth: []
       - JwtToken: []
       summary: Get Sign In User
       tags:
       - Auth
-  /v1/auth/user-profile:
-    put:
-      consumes:
-      - application/json
-      description: Update User Profile By ID
-      parameters:
-      - description: User Profile Update Request
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.GlobalUserUpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update User Profile By ID
-      tags:
-      - Auth
-  /v1/booking-additional-service:
-    get:
-      description: Get All BookingAdditionalService With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: booking_id (int)
-        in: query
-        name: booking_id
-        type: integer
-      - description: service_id (int)
-        in: query
-        name: service_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All BookingAdditionalService With Pagination
-      tags:
-      - BookingAdditionalService
-    post:
-      description: Create New BookingAdditionalService
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.BookingAdditionalServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create BookingAdditionalService
-      tags:
-      - BookingAdditionalService
-  /v1/booking-additional-service/{id}:
-    delete:
-      description: Delete Single BookingAdditionalService by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single BookingAdditionalService by ID
-      tags:
-      - BookingAdditionalService
-    get:
-      description: Get Single BookingAdditionalService
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single BookingAdditionalService
-      tags:
-      - BookingAdditionalService
-    put:
-      description: Update Single BookingAdditionalService by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.BookingAdditionalServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single BookingAdditionalService by ID
-      tags:
-      - BookingAdditionalService
-  /v1/category:
-    get:
-      description: Get All Category With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: app_id (int)
-        in: query
-        name: app_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Category With Pagination
-      tags:
-      - Category
-    post:
-      description: Create New Category
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.CategoryRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create Category
-      tags:
-      - Category
-  /v1/category/{id}:
-    delete:
-      description: Delete Single Category by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single Category by ID
-      tags:
-      - Category
-    get:
-      description: Get Single Category
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Category
-      tags:
-      - Category
-    put:
-      description: Update Single Category by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.CategoryRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Category by ID
-      tags:
-      - Category
-  /v1/destination:
-    get:
-      description: Get All Destination With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: destination_type_id (int)
-        in: query
-        name: destination_type_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Destination With Pagination
-      tags:
-      - Destination
-    post:
-      description: Create New Destination
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.DestinationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create Destination
-      tags:
-      - Destination
-  /v1/destination-type:
-    get:
-      description: Get All DestinationType With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All DestinationType With Pagination
-      tags:
-      - DestinationType
-    post:
-      description: Create New DestinationType
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.DestinationTypeRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create DestinationType
-      tags:
-      - DestinationType
-  /v1/destination-type/{id}:
-    delete:
-      description: Delete Single DestinationType by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single DestinationType by ID
-      tags:
-      - DestinationType
-    get:
-      description: Get Single DestinationType
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single DestinationType
-      tags:
-      - DestinationType
-    put:
-      description: Update Single DestinationType by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.DestinationTypeRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single DestinationType by ID
-      tags:
-      - DestinationType
-  /v1/destination/{id}:
-    delete:
-      description: Delete Single Destination by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single Destination by ID
-      tags:
-      - Destination
-    get:
-      description: Get Single Destination
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Destination
-      tags:
-      - Destination
-    put:
-      description: Update Single Destination by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.DestinationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Destination by ID
-      tags:
-      - Destination
   /v1/file:
     get:
       consumes:
@@ -1211,133 +301,82 @@ paths:
       summary: File Uploader
       tags:
       - File
-  /v1/file/multi:
+  /v1/matches:
+    get:
+      description: Get all matches with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search by team names
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.ResPaging'
+      summary: Get All Matches
+      tags:
+      - Matches
     post:
       consumes:
-      - multipart/form-data
-      description: Uploads multiple files
-      parameters:
-      - description: Files to upload
-        in: formData
-        name: files
-        required: true
-        type: file
-      - description: width
-        in: formData
-        name: width
-        type: string
-      - description: height
-        in: formData
-        name: height
-        type: string
-      - description: Folder to store
-        in: query
-        name: folder
-        type: string
-      produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - JwtToken: []
-      summary: Upload multiple files
-      tags:
-      - File
-  /v1/guides:
-    get:
-      description: Get All Guide With Pagination
+      description: Create a new match schedule
       parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Guide With Pagination
-      tags:
-      - Guide
-    post:
-      description: Create New Guide
-      parameters:
-      - description: Create body
+      - description: Match data
         in: body
-        name: Body
+        name: match
         required: true
         schema:
-          $ref: '#/definitions/reqres.GuideRequest'
+          $ref: '#/definitions/reqres.MatchRequest'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/reqres.MatchResponse'
       security:
       - ApiKeyAuth: []
       - JwtToken: []
-      summary: Create Guide
+      summary: Create Match
       tags:
-      - Guide
-  /v1/guides/{id}:
+      - Matches
+  /v1/matches/{id}:
     delete:
-      description: Delete Single Guide by ID
+      description: Delete match by ID (soft delete)
       parameters:
-      - description: ID
+      - description: Match ID
         in: path
         name: id
         required: true
         type: integer
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       security:
       - ApiKeyAuth: []
       - JwtToken: []
-      summary: Delete Single Guide by ID
+      summary: Delete Match
       tags:
-      - Guide
+      - Matches
     get:
-      description: Get Single Guide
+      description: Get match details by ID
       parameters:
-      - description: ID
+      - description: Match ID
         in: path
         name: id
         required: true
@@ -1347,2126 +386,302 @@ paths:
       responses:
         "200":
           description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Guide
+          schema:
+            $ref: '#/definitions/reqres.MatchResponse'
+      summary: Get Match by ID
       tags:
-      - Guide
+      - Matches
+  /v1/matches/{id}/report:
+    get:
+      description: Get detailed match report with statistics
+      parameters:
+      - description: Match ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.MatchReportResponse'
+      summary: Get Match Report
+      tags:
+      - Matches
+  /v1/matches/{id}/result:
     put:
-      description: Update Single Guide by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.GuideRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Guide by ID
-      tags:
-      - Guide
-  /v1/role:
-    get:
-      description: Get All Roles With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: app_id (int)
-        in: query
-        name: app_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Roles With Pagination
-      tags:
-      - Role
-    post:
-      description: Create New Role
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.GlobalRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create Role
-      tags:
-      - Role
-  /v1/role/{id}:
-    delete:
-      description: Delete Single Role by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single Role by ID
-      tags:
-      - Role
-    get:
-      description: Get Single Role
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Role
-      tags:
-      - Role
-    put:
-      description: Update Single Role by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.GlobalRoleUpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Role by ID
-      tags:
-      - Role
-  /v1/service:
-    get:
-      description: Get All Service With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: service_category_id (int)
-        in: query
-        name: service_category_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Service With Pagination
-      tags:
-      - Service
-    post:
-      description: Create New Service
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.ServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create Service
-      tags:
-      - Service
-  /v1/service-category:
-    get:
-      description: Get All ServiceCategory With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: app_id (int)
-        in: query
-        name: app_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All ServiceCategory With Pagination
-      tags:
-      - ServiceCategory
-    post:
-      description: Create New ServiceCategory
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.ServiceCategoryRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create ServiceCategory
-      tags:
-      - ServiceCategory
-  /v1/service-category/{id}:
-    delete:
-      description: Delete Single ServiceCategory by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single ServiceCategory by ID
-      tags:
-      - ServiceCategory
-    get:
-      description: Get Single ServiceCategory
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single ServiceCategory
-      tags:
-      - ServiceCategory
-    put:
-      description: Update Single ServiceCategory by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.ServiceCategoryRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single ServiceCategory by ID
-      tags:
-      - ServiceCategory
-  /v1/service/{id}:
-    delete:
-      description: Delete Single Service by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single Service by ID
-      tags:
-      - Service
-    get:
-      description: Get Single Service
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Service
-      tags:
-      - Service
-    put:
-      description: Update Single Service by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.ServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Service by ID
-      tags:
-      - Service
-  /v1/transportation-class:
-    get:
-      description: Get All TransportationClass With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: transportation_type_id (int)
-        in: query
-        name: transportation_type_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationClass With Pagination
-      tags:
-      - TransportationClass
-    post:
-      description: Create New TransportationClass
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationClassRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationClass
-      tags:
-      - TransportationClass
-  /v1/transportation-class/{id}:
-    delete:
-      description: Delete Single TransportationClass by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationClass by ID
-      tags:
-      - TransportationClass
-    get:
-      description: Get Single TransportationClass
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationClass
-      tags:
-      - TransportationClass
-    put:
-      description: Update Single TransportationClass by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationClassRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationClass by ID
-      tags:
-      - TransportationClass
-  /v1/transportation-company:
-    get:
-      description: Get All TransportationCompany With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: transportation_type_id (int)
-        in: query
-        name: transportation_type_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationCompany With Pagination
-      tags:
-      - TransportationCompany
-    post:
-      description: Create New TransportationCompany
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationCompanyRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationCompany
-      tags:
-      - TransportationCompany
-  /v1/transportation-company/{id}:
-    delete:
-      description: Delete Single TransportationCompany by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationCompany by ID
-      tags:
-      - TransportationCompany
-    get:
-      description: Get Single TransportationCompany
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationCompany
-      tags:
-      - TransportationCompany
-    put:
-      description: Update Single TransportationCompany by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationCompanyRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationCompany by ID
-      tags:
-      - TransportationCompany
-  /v1/transportation-route:
-    get:
-      description: Get All TransportationRoute With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: transportation_type_id (int)
-        in: query
-        name: transportation_type_id
-        type: integer
-      - description: transportation_company_id (int)
-        in: query
-        name: transportation_company_id
-        type: integer
-      - description: departure_terminal_id (int)
-        in: query
-        name: departure_terminal_id
-        type: integer
-      - description: arrival_terminal_id (int)
-        in: query
-        name: arrival_terminal_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationRoute With Pagination
-      tags:
-      - TransportationRoute
-    post:
-      description: Create New TransportationRoute
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationRouteRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationRoute
-      tags:
-      - TransportationRoute
-  /v1/transportation-route/{id}:
-    delete:
-      description: Delete Single TransportationRoute by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationRoute by ID
-      tags:
-      - TransportationRoute
-    get:
-      description: Get Single TransportationRoute
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationRoute
-      tags:
-      - TransportationRoute
-    put:
-      description: Update Single TransportationRoute by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationRouteRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationRoute by ID
-      tags:
-      - TransportationRoute
-  /v1/transportation-schedule:
-    get:
-      description: Get All TransportationSchedule With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: transportation_route_id (int)
-        in: query
-        name: transportation_route_id
-        type: integer
-      - description: transportation_class_id (int)
-        in: query
-        name: transportation_class_id
-        type: integer
-      - description: 'valid_from (format: 2006-01-02)'
-        in: query
-        name: valid_from
-        type: string
-      - description: 'valid_until (format: 2006-01-02)'
-        in: query
-        name: valid_until
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationSchedule With Pagination
-      tags:
-      - TransportationSchedule
-    post:
-      description: Create New TransportationSchedule
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationScheduleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationSchedule
-      tags:
-      - TransportationSchedule
-  /v1/transportation-schedule/{id}:
-    delete:
-      description: Delete Single TransportationSchedule by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationSchedule by ID
-      tags:
-      - TransportationSchedule
-    get:
-      description: Get Single TransportationSchedule
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationSchedule
-      tags:
-      - TransportationSchedule
-    put:
-      description: Update Single TransportationSchedule by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationScheduleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationSchedule by ID
-      tags:
-      - TransportationSchedule
-  /v1/transportation-terminal:
-    get:
-      description: Get All TransportationTerminal With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: transportation_type_id (int)
-        in: query
-        name: transportation_type_id
-        type: integer
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationTerminal With Pagination
-      tags:
-      - TransportationTerminal
-    post:
-      description: Create New TransportationTerminal
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationTerminalRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationTerminal
-      tags:
-      - TransportationTerminal
-  /v1/transportation-terminal/{id}:
-    delete:
-      description: Delete Single TransportationTerminal by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationTerminal by ID
-      tags:
-      - TransportationTerminal
-    get:
-      description: Get Single TransportationTerminal
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationTerminal
-      tags:
-      - TransportationTerminal
-    put:
-      description: Update Single TransportationTerminal by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationTerminalRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationTerminal by ID
-      tags:
-      - TransportationTerminal
-  /v1/transportation-type:
-    get:
-      description: Get All TransportationType With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TransportationType With Pagination
-      tags:
-      - TransportationType
-    post:
-      description: Create New TransportationType
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationTypeRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TransportationType
-      tags:
-      - TransportationType
-  /v1/transportation-type/{id}:
-    delete:
-      description: Delete Single TransportationType by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TransportationType by ID
-      tags:
-      - TransportationType
-    get:
-      description: Get Single TransportationType
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TransportationType
-      tags:
-      - TransportationType
-    put:
-      description: Update Single TransportationType by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TransportationTypeRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TransportationType by ID
-      tags:
-      - TransportationType
-  /v1/trip:
-    get:
-      description: Get All Trip With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: category_id (int)
-        in: query
-        name: category_id
-        type: integer
-      - description: app_id (int)
-        in: query
-        name: app_id
-        type: integer
-      - description: destination_type_id (int)
-        in: query
-        name: destination_type_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Trip With Pagination
-      tags:
-      - Trip
-    post:
-      description: Create New Trip
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create Trip
-      tags:
-      - Trip
-  /v1/trip-booking:
-    get:
-      description: Get All TripBooking With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: trip_id (int)
-        in: query
-        name: trip_id
-        type: integer
-      - description: user_id (int)
-        in: query
-        name: user_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TripBooking With Pagination
-      tags:
-      - TripBooking
-    post:
-      description: Create New TripBooking
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripBookingRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TripBooking
-      tags:
-      - TripBooking
-  /v1/trip-booking/{id}:
-    delete:
-      description: Delete Single TripBooking by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TripBooking by ID
-      tags:
-      - TripBooking
-    get:
-      description: Get Single TripBooking
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TripBooking
-      tags:
-      - TripBooking
-    put:
-      description: Update Single TripBooking by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripBookingRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TripBooking by ID
-      tags:
-      - TripBooking
-  /v1/trip-destination:
-    get:
-      description: Get All TripDestination With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: trip_id (int)
-        in: query
-        name: trip_id
-        type: integer
-      - description: destination_id (int)
-        in: query
-        name: destination_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TripDestination With Pagination
-      tags:
-      - TripDestination
-    post:
-      description: Create New TripDestination
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripDestinationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TripDestination
-      tags:
-      - TripDestination
-  /v1/trip-destination/{id}:
-    delete:
-      description: Delete Single TripDestination by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TripDestination by ID
-      tags:
-      - TripDestination
-    get:
-      description: Get Single TripDestination
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TripDestination
-      tags:
-      - TripDestination
-    put:
-      description: Update Single TripDestination by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripDestinationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TripDestination by ID
-      tags:
-      - TripDestination
-  /v1/trip-guide:
-    get:
-      description: Get All TripGuide With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: trip_schedule_id (int)
-        in: query
-        name: trip_schedule_id
-        type: integer
-      - description: destination_id (int)
-        in: query
-        name: guide_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TripGuide With Pagination
-      tags:
-      - TripGuide
-    post:
-      description: Create New TripGuide
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripGuideRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TripGuide
-      tags:
-      - TripGuide
-  /v1/trip-guide/{id}:
-    delete:
-      description: Delete Single TripGuide by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TripGuide by ID
-      tags:
-      - TripGuide
-    get:
-      description: Get Single TripGuide
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TripGuide
-      tags:
-      - TripGuide
-    put:
-      description: Update Single TripGuide by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripGuideRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TripGuide by ID
-      tags:
-      - TripGuide
-  /v1/trip-inclusion:
-    get:
-      description: Get All TripInclusion With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: trip_id (int)
-        in: query
-        name: trip_id
-        type: integer
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_top
-        type: string
-      - description: 'created_at_margin_top (format: 2006-01-02)'
-        in: query
-        name: created_at_margin_bottom
-        type: string
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TripInclusion With Pagination
-      tags:
-      - TripInclusion
-    post:
-      description: Create New TripInclusion
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripInclusionRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TripInclusion
-      tags:
-      - TripInclusion
-  /v1/trip-inclusion/{id}:
-    delete:
-      description: Delete Single TripInclusion by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TripInclusion by ID
-      tags:
-      - TripInclusion
-    get:
-      description: Get Single TripInclusion
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TripInclusion
-      tags:
-      - TripInclusion
-    put:
-      description: Update Single TripInclusion by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripInclusionRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TripInclusion by ID
-      tags:
-      - TripInclusion
-  /v1/trip-schedule:
-    get:
-      description: Get All TripSchedule With Pagination
-      parameters:
-      - description: search (string)
-        in: query
-        name: search
-        type: string
-      - description: page (int)
-        in: query
-        name: page
-        type: integer
-      - description: limit (int)
-        in: query
-        name: limit
-        type: integer
-      - description: sort (ASC/DESC)
-        in: query
-        name: sort
-        type: string
-      - description: 'order by (default: id)'
-        in: query
-        name: order
-        type: string
-      - description: status (true (active) or false (inactive))
-        in: query
-        name: status
-        type: boolean
-      - description: trip_id (int)
-        in: query
-        name: trip_id
-        type: integer
-      - description: destination_id (int)
-        in: query
-        name: destination_id
-        type: integer
-      - description: code (string)
-        in: query
-        name: code
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get All TripSchedule With Pagination
-      tags:
-      - TripSchedule
-    post:
-      description: Create New TripSchedule
-      parameters:
-      - description: Create body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripScheduleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Create TripSchedule
-      tags:
-      - TripSchedule
-  /v1/trip-schedule/{id}:
-    delete:
-      description: Delete Single TripSchedule by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single TripSchedule by ID
-      tags:
-      - TripSchedule
-    get:
-      description: Get Single TripSchedule
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single TripSchedule
-      tags:
-      - TripSchedule
-    put:
-      description: Update Single TripSchedule by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripScheduleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single TripSchedule by ID
-      tags:
-      - TripSchedule
-  /v1/trip/{id}:
-    delete:
-      description: Delete Single Trip by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Delete Single Trip by ID
-      tags:
-      - Trip
-    get:
-      description: Get Single Trip
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Get Single Trip
-      tags:
-      - Trip
-    put:
-      description: Update Single Trip by ID
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/reqres.TripRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Update Single Trip by ID
-      tags:
-      - Trip
-  /version:
-    get:
       consumes:
       - application/json
-      description: Get Version Build
+      description: Update match result with scores and goals
+      parameters:
+      - description: Match ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Match result data
+        in: body
+        name: result
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.MatchResultRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/reqres.MatchResponse'
       security:
       - ApiKeyAuth: []
-      summary: Get Version Build
+      - JwtToken: []
+      summary: Update Match Result
       tags:
-      - Home
+      - Matches
+  /v1/players:
+    get:
+      description: Get all players with pagination and optional team filter
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search by name or position
+        in: query
+        name: search
+        type: string
+      - description: Filter by team ID
+        in: query
+        name: team_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.ResPaging'
+      summary: Get All Players
+      tags:
+      - Players
+    post:
+      consumes:
+      - application/json
+      description: Create a new player
+      parameters:
+      - description: Player data
+        in: body
+        name: player
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.PlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/reqres.PlayerResponse'
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Create Player
+      tags:
+      - Players
+  /v1/players/{id}:
+    delete:
+      description: Delete player by ID (soft delete)
+      parameters:
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Delete Player
+      tags:
+      - Players
+    get:
+      description: Get player details by ID
+      parameters:
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.PlayerResponse'
+      summary: Get Player by ID
+      tags:
+      - Players
+    put:
+      consumes:
+      - application/json
+      description: Update player by ID
+      parameters:
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Player data
+        in: body
+        name: player
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.PlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.PlayerResponse'
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Update Player
+      tags:
+      - Players
+  /v1/teams:
+    get:
+      description: Get all teams with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search by name or city
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.ResPaging'
+      summary: Get All Teams
+      tags:
+      - Teams
+    post:
+      consumes:
+      - application/json
+      description: Create a new team
+      parameters:
+      - description: Team data
+        in: body
+        name: team
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.TeamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.TeamResponse'
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Create Team
+      tags:
+      - Teams
+  /v1/teams/{id}:
+    delete:
+      description: Delete team by ID (soft delete)
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Delete Team
+      tags:
+      - Teams
+    get:
+      description: Get team details by ID
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.TeamResponse'
+      summary: Get Team by ID
+      tags:
+      - Teams
+    put:
+      consumes:
+      - application/json
+      description: Update team by ID
+      parameters:
+      - description: Team ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Team data
+        in: body
+        name: team
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.TeamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reqres.TeamResponse'
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Update Team
+      tags:
+      - Teams
 securityDefinitions:
   JwtToken:
     in: header

@@ -1,7 +1,6 @@
 package reqres
 
 import (
-	"ayo-indonesia-api/app/models"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -9,6 +8,7 @@ import (
 
 type MatchRequest struct {
 	Date       string `json:"date"`
+	Time       string `json:"time"`
 	HomeTeamID uint   `json:"home_team_id"`
 	AwayTeamID uint   `json:"away_team_id"`
 }
@@ -16,6 +16,7 @@ type MatchRequest struct {
 func (r MatchRequest) Validate() error {
 	return validation.ValidateStruct(&r,
 		validation.Field(&r.Date, validation.Required),
+		validation.Field(&r.Time, validation.Required),
 		validation.Field(&r.HomeTeamID, validation.Required),
 		validation.Field(&r.AwayTeamID, validation.Required),
 	)
@@ -33,8 +34,9 @@ type GoalRequest struct {
 }
 
 type MatchResponse struct {
-	models.CustomGormModel
+	ID        uint           `json:"id"`
 	Date      time.Time      `json:"date"`
+	Time      string         `json:"time"`
 	HomeTeam  TeamResponse   `json:"home_team"`
 	AwayTeam  TeamResponse   `json:"away_team"`
 	HomeScore *int           `json:"home_score"`
@@ -44,7 +46,7 @@ type MatchResponse struct {
 }
 
 type GoalResponse struct {
-	models.CustomGormModel
+	ID     uint           `json:"id"`
 	Player PlayerResponse `json:"player"`
 	Minute int            `json:"minute"`
 }

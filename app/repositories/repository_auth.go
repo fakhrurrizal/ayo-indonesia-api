@@ -21,10 +21,7 @@ func SignIn(email, password string) (user models.GlobalUser, token string, err e
 		err = errors.New("incorrect password")
 		return
 	}
-	if user.EmailVerifiedAt.IsZero() {
-		err = errors.New("please verify your email")
-		return
-	}
+
 	token, err = middlewares.AuthMakeToken(user)
 	if err != nil {
 		return
