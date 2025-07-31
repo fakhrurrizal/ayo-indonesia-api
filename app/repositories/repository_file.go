@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/guregu/null"
 	"github.com/lib/pq"
 )
 
@@ -71,7 +70,7 @@ func GetFile(id int, param reqres.ReqPaging) (data reqres.ResPaging, err error) 
 			}
 		}
 	}
-	data = utils.PopulateResPaging(&param, files, totalResult.Total, totalFiltered, null.TimeFrom(totalResult.LastUpdated))
+	data = utils.PopulateResPaging(&param, files, totalResult.Total, totalFiltered)
 	return
 }
 

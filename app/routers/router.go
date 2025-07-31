@@ -4,6 +4,7 @@ import (
 	"ayo-indonesia-api/app/controllers"
 	"ayo-indonesia-api/app/middlewares"
 	"ayo-indonesia-api/config"
+	_ "ayo-indonesia-api/docs"
 	"fmt"
 	"html/template"
 	"io"
@@ -50,44 +51,49 @@ func Init() *gin.Engine {
 		}
 	})
 
-	router.GET("/", controllers.Index)
 
 	v1 := router.Group("/v1", middlewares.StripHTMLMiddleware())
 	{
-		// Auth routes
 		auth := v1.Group("/auth")
 		{
 			auth.POST("/signin", controllers.SignIn)
+			auth.POST("/signup", controllers.SignUp)
 			auth.GET("/user", middlewares.Auth(), controllers.GetSignInUser)
-			auth.PUT("/user-profile", middlewares.Auth(), controllers.UpdateUserProfileByID)
 		}
 
-		// Trip routes
-		trip := v1.Group("/trip")
-		{
-			trip.POST("", middlewares.Auth(), controllers.CreateTrip)
-			trip.GET("/:id", controllers.GetTripByID)
-			trip.GET("", controllers.GetTrips)
-			trip.DELETE("/:id", middlewares.Auth(), controllers.DeleteTripByID)
-			trip.PUT("/:id", middlewares.Auth(), controllers.UpdateTripByID)
-		}
-
-		// File routes
 		file := v1.Group("/file", middlewares.Auth())
 		{
-			file.POST("", controllers.UploadFile)
+			file.POST("", middlewares.Auth(), controllers.UploadFile)
 			file.GET("", controllers.GetFile)
 		}
-
-		// Destination Type routes
-		destinationType := v1.Group("/destination-type")
+		teams := v1.Group("/teams")
 		{
-			destinationType.POST("", middlewares.Auth(), controllers.CreateDestinationType)
-			destinationType.GET("/:id", controllers.GetDestinationTypeByID)
-			destinationType.GET("", controllers.GetDestinationTypes)
-			destinationType.DELETE("/:id", middlewares.Auth(), controllers.DeleteDestinationTypeByID)
-			destinationType.PUT("/:id", middlewares.Auth(), controllers.UpdateDestinationTypeByID)
+			teams.GET("", controllers.GetTeams)
+			teams.GET("/:id", controllers.GetTeamByID)
+			teams.POST("", middlewares.Auth(), controllers.CreateTeam)
+			teams.PUT("/:id", middlewares.Auth(), controllers.UpdateTeam)
+			teams.DELETE("/:id", middlewares.Auth(), controllers.DeleteTeam)
 		}
+
+		players := v1.Group("/players")
+		{
+			players.GET("", controllers.GetPlayers)
+			players.GET("/:id", controllers.GetPlayerByID)
+			players.POST("", middlewares.Auth(), controllers.CreatePlayer)
+			players.PUT("/:id", middlewares.Auth(), controllers.UpdatePlayer)
+			players.DELETE("/:id", middlewares.Auth(), controllers.DeletePlayer)
+		}
+
+		matches := v1.Group("/matches")
+		{
+			matches.GET("", controllers.GetMatches)
+			matches.GET("/:id", controllers.GetMatchByID)
+			matches.POST("", middlewares.Auth(), controllers.CreateMatch)
+			matches.PUT("/:id/result", middlewares.Auth(), controllers.UpdateMatchResult)
+			matches.DELETE("/:id", middlewares.Auth(), controllers.DeleteMatch)
+			matches.GET("/:id/report", controllers.GetMatchReport)
+		}
+
 	}
 
 	log.Println("Server initialized...")

@@ -8,4 +8,6 @@ type Player struct {
     Position     string  `json:"position" gorm:"column:position;not null"` // penyerang, gelandang, bertahan, penjaga gawang
     JerseyNumber int     `json:"jersey_number" gorm:"column:jersey_number;not null"`
     TeamID       uint    `json:"team_id" gorm:"column:team_id;not null"`
+    Team         Team    `json:"team" gorm:"foreignKey:TeamID"`
+    Goals        []Goal  `json:"goals" gorm:"foreignKey:PlayerID"`
 }

@@ -3,16 +3,14 @@ package models
 import (
 	"time"
 
-	"github.com/guregu/null"
 	"gorm.io/gorm"
 )
 
 type GlobalUser struct {
 	CustomGormModel
-	Fullname        string    `json:"fullname" gorm:"type: varchar(255)"`
-	Email           string    `json:"email" gorm:"type: varchar(255)"`
-	Password        string    `json:"-" gorm:"type: varchar(255)"`
-	EmailVerifiedAt null.Time `json:"email_verified_at" gorm:"type: timestamptz"`
+	Fullname string `json:"fullname" gorm:"type: varchar(255)"`
+	Email    string `json:"email" gorm:"type: varchar(255)"`
+	Password string `json:"-" gorm:"type: varchar(255)"`
 }
 
 func (GlobalUser) TableName() string {

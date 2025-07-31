@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"ayo-indonesia-api/config"
 	"encoding/json"
-	"fakhrur-project/config"
 	"fmt"
 	"math/rand"
 	"reflect"

@@ -8,7 +8,6 @@ import (
 	"ayo-indonesia-api/config"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -30,146 +29,103 @@ import (
 // @Router /v1/file [post]
 // @Security ApiKeyAuth
 // @Security JwtToken
-func UploadFile(c *gin.Context) error {
-
+func UploadFile(c *gin.Context) {
 	location, err := time.LoadLocation("Asia/Jakarta")
 	if err != nil {
 		location = time.Local
-		err = nil
 	}
+
 	storefolder := c.Query("folder")
+
 	userIDData, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, utils.NewUnauthorizedError("Wrong Authorization Token"))
+		return
 	}
 	userID := userIDData.(int)
+
+	// File validation
 	acceptedTypes := []string{
-		"image/png",
-		"image/jpeg",
-		"image/gif",
-		"image/webp",
-		"video/quicktime",
-		"video/mp4",
-		"application/pdf",
-		"text/csv",
-		"application/vnd.ms-excel",
+		"image/png", "image/jpeg", "image/gif", "image/webp", "video/quicktime", "video/mp4",
+		"application/pdf", "text/csv", "application/vnd.ms-excel",
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		"application/vnd.ms-excel.sheet.macroenabled.12",
-		"image/svg+xml",
-		"image/svg",
+		"application/vnd.ms-excel.sheet.macroenabled.12", "image/svg+xml", "image/svg",
 	}
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		return err
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
+		return
 	}
 
-	// Get the MIME type of the file
 	fileType := file.Header.Get("Content-Type")
-	extension := ".jpg"
-	if fileType == "image/png" {
-		extension = ".png"
-	}
-	if fileType == "image/jpeg" {
-		extension = ".jpg"
-	}
-	if fileType == "image/webp" {
-		extension = ".webp"
-	}
-	if fileType == "image/gif" {
-		extension = ".gif"
-	}
-	if fileType == "video/quicktime" {
-		extension = ".mov"
-	}
-	if fileType == "video/mp4" {
-		extension = ".mov"
-	}
-	if fileType == "application/pdf" {
-		extension = ".pdf"
-	}
-	if fileType == "application/vnd.ms-excel" {
-		extension = ".xls"
-	}
-	if fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
-		extension = ".xlsx"
-	}
-	if fileType == "application/vnd.ms-excel.sheet.macroenabled.12" {
-		extension = ".et"
-	}
-	if fileType == "text/csv" {
-		extension = ".csv"
-	}
-	if fileType == "image/svg+xml" || fileType == "image/svg" {
-		extension = ".svg"
-	}
-	// Check if the MIME type is accepted
-	var isAccepted bool
-	for _, t := range acceptedTypes {
-		if t == fileType {
-			isAccepted = true
-			break
-		}
+	extension := map[string]string{
+		"image/png": ".png", "image/jpeg": ".jpg", "image/gif": ".gif", "image/webp": ".webp",
+		"video/quicktime": ".mov", "video/mp4": ".mp4", "application/pdf": ".pdf", "text/csv": ".csv",
+		"application/vnd.ms-excel": ".xls",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+		"application/vnd.ms-excel.sheet.macroenabled.12":                    ".et",
+		"image/svg+xml": ".svg", "image/svg": ".svg",
+	}[fileType]
+
+	if extension == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File type not allowed", "accepted_types": acceptedTypes})
+		return
 	}
 
-	if !isAccepted {
-		c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"accepted_type": acceptedTypes,
-		})
-	}
-
-	// Open the file
 	src, err := file.Open()
 	if err != nil {
-		return err
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open uploaded file"})
+		return
 	}
 	defer src.Close()
 
-	// Create a destination file
 	t := time.Now().In(location)
-
-	time := t.Format("2006-01")
+	timeStr := t.Format("2006-01")
 	if storefolder != "" {
-		storefolder = storefolder + "/"
+		storefolder += "/"
 	}
-	folder := storefolder + strconv.Itoa(int(userID)) + "/" + time
-	err = os.MkdirAll(config.RootPath()+"/assets/uploads/"+folder, os.ModePerm)
+	folder := fmt.Sprintf("%s%d/%s", storefolder, userID, timeStr)
+
+	err = os.MkdirAll(filepath.Join(config.RootPath(), "assets/uploads/", folder), os.ModePerm)
 	if err != nil {
-		return err
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload folder"})
+		return
 	}
-	timestamp := strconv.Itoa(int(t.Unix()))
 
-	filePath := filepath.Join(config.RootPath()+"/assets/uploads/", folder, timestamp+extension)
+	timestamp := strconv.FormatInt(t.Unix(), 10)
+	fileName := timestamp + extension
+	filePath := filepath.Join(config.RootPath(), "assets/uploads", folder, fileName)
 
-	fmt.Println(filePath)
 	dst, err := os.Create(filePath)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create file"})
+		return
 	}
 	defer dst.Close()
 
 	if _, err = io.Copy(dst, src); err != nil {
-		return err
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
 	}
 
-	data, err := SaveFileToDatabase(userID, folder+"/"+timestamp+extension, filePath)
+	data, err := SaveFileToDatabase(userID, folder+"/"+fileName, filePath)
 	if err != nil {
 		c.JSON(utils.ParseHttpError(err))
+		return
 	}
-	data.FullUrl = config.LoadConfig().BaseUrl + "/assets/uploads/" + folder + "/" + timestamp + extension
 
-	if config.LoadConfig().EnableEncodeID {
-		if data.EncodedID == "" {
-			data.EncodedID = utils.EndcodeID(int(data.ID))
-		}
+	data.FullUrl = config.LoadConfig().BaseUrl + "/assets/uploads/" + folder + "/" + fileName
+
+	if config.LoadConfig().EnableEncodeID && data.EncodedID == "" {
+		data.EncodedID = utils.EndcodeID(int(data.ID))
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"data":    data,
 		"message": "File uploaded successfully",
 	})
-	return nil
 }
 
 func SaveFileToDatabase(id int, filename, path string) (data models.GlobalFile, err error) {
@@ -227,7 +183,6 @@ func GetFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, data)
-	return
 }
 
 func GetFileControl(id int, param reqres.ReqPaging) (data reqres.ResPaging, err error) {
@@ -240,36 +195,35 @@ func GetFileControl(id int, param reqres.ReqPaging) (data reqres.ResPaging, err 
 	return
 }
 
+// func getExtensionForFileType(fileType string) string {
+// 	switch fileType {
+// 	case "image/png":
+// 		return ".png"
+// 	case "image/jpeg":
+// 		return ".jpg"
+// 	case "image/gif":
+// 		return ".gif"
+// 	case "video/quicktime":
+// 		return ".mov"
+// 	case "video/mp4":
+// 		return ".mp4"
+// 	case "application/pdf":
+// 		return ".pdf"
+// 	default:
+// 		return ".unknown"
+// 	}
+// }
 
-func getExtensionForFileType(fileType string) string {
-	switch fileType {
-	case "image/png":
-		return ".png"
-	case "image/jpeg":
-		return ".jpg"
-	case "image/gif":
-		return ".gif"
-	case "video/quicktime":
-		return ".mov"
-	case "video/mp4":
-		return ".mp4"
-	case "application/pdf":
-		return ".pdf"
-	default:
-		return ".unknown"
-	}
-}
+// func saveFile(src multipart.File, destPath string) error {
+// 	dst, err := os.Create(destPath)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer dst.Close()
 
-func saveFile(src multipart.File, destPath string) error {
-	dst, err := os.Create(destPath)
-	if err != nil {
-		return err
-	}
-	defer dst.Close()
-
-	_, err = io.Copy(dst, src)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// 	_, err = io.Copy(dst, src)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
